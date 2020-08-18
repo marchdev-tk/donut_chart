@@ -37,7 +37,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "marchdev.tk.flutter_package_template_example"
+        applicationId "marchdev.tk.donut_chart_example"
         minSdkVersion 16
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()

@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_package_template/flutter_package_template.dart';
+import 'package:donut_chart/donut_chart.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'flutter_package_template Demo',
+      title: 'donut_chart Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -29,8 +29,41 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<Section> _sections = [
+    Section(value: 0.34, selected: true),
+    Section(value: 0.21),
+    Section(value: 0.25),
+    Section(value: 0.20),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    // TODO: create example
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Chart2 Demo'),
+      ),
+      body: Center(
+        child: Container(
+          color: Colors.blueGrey[900],
+          child: DonutChart(
+            data: ChartData(
+              sectionColor: Colors.white,
+              shadowColor: Color(0x40000000),
+              strokeGradient: LinearGradient(
+                tileMode: TileMode.repeated,
+                colors: [
+                  Color.fromRGBO(0, 0, 0, 0.0384),
+                  Color.fromRGBO(255, 255, 255, 0.2376),
+                ],
+              ),
+              strokeSelectedColor: Color(0xFFE5E7EF),
+            ),
+            sections: _sections,
+            onSectionTapped: (value) =>
+                setState(() => _sections.selectByIndex(value)),
+          ),
+        ),
+      ),
+    );
   }
 }

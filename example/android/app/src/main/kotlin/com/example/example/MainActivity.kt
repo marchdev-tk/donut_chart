@@ -1,4 +1,4 @@
-package marchdev.tk.flutter_package_template_example
+package marchdev.tk.donut_chart_example
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

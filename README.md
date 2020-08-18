@@ -1,9 +1,9 @@
-# flutter_package_template
+# donut_chart
 
-![Build](https://github.com/marchdev-tk/flutter_package_template/workflows/build/badge.svg)
-[![Pub](https://img.shields.io/pub/v/flutter_package_template.svg)](https://pub.dartlang.org/packages/flutter_package_template)
-![GitHub](https://img.shields.io/github/license/marchdev-tk/flutter_package_template)
-![GitHub stars](https://img.shields.io/github/stars/marchdev-tk/flutter_package_template?style=social)
+![Build](https://github.com/marchdev-tk/donut_chart/workflows/build/badge.svg)
+[![Pub](https://img.shields.io/pub/v/donut_chart.svg)](https://pub.dartlang.org/packages/donut_chart)
+![GitHub](https://img.shields.io/github/license/marchdev-tk/donut_chart)
+![GitHub stars](https://img.shields.io/github/stars/marchdev-tk/donut_chart?style=social)
 
 Package description
 
@@ -17,4 +17,9 @@ Add examples here
 
 ## Feature requests and Bug reports
 
-Feel free to post a feature requests or report a bug [here](https://github.com/marchdev-tk/flutter_package_template/issues).
+Feel free to post a feature requests or report a bug [here](https://github.com/marchdev-tk/donut_chart/issues).
+
+## TODO
+
+* Add check for sections total value (must be 1.0)
+* Add animated transitions between states

@@ -1,6 +1,6 @@
-# flutter_package_template_example
+# donut_chart_example
 
-Demonstrates how to use the flutter_package_template package.
+Demonstrates how to use the donut_chart package.
 
 ## Usage
 

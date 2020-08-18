@@ -1,5 +1,5 @@
-name: flutter_package_template_example
-description: Demonstrates how to use the flutter_package_template package.
+name: donut_chart_example
+description: Demonstrates how to use the donut_chart package.
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
@@ -8,7 +8,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_package_template:
+  donut_chart:
     path: ../
 
 flutter:
