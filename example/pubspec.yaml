@@ -1,0 +1,15 @@
+name: flutter_package_template_example
+description: Demonstrates how to use the flutter_package_template package.
+
+environment:
+  sdk: ">=2.6.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_package_template:
+    path: ../
+
+flutter:
+  uses-material-design: true
