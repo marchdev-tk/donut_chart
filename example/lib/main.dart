@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chart2 Demo'),
+        title: Text('donut_chart Demo'),
       ),
       body: Center(
         child: Container(
