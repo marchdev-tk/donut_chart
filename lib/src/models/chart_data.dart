@@ -14,7 +14,6 @@ class ChartData {
     this.strokeGradient,
     this.strokeSelectedColor,
     this.strokeSelectedGradient,
-    this.backgroundGradient,
     this.outerStrokeWidth = 1.5,
     this.outerSelectedStrokeWidth = 0,
     this.innerStrokeWidth = 1.5,
@@ -25,7 +24,6 @@ class ChartData {
     this.sectionColor,
     this.shadowColor,
     this.shadowElevation = 4,
-    this.backgroundGradient,
   })  : strokeColor = null,
         strokeGradient = null,
         strokeSelectedColor = null,
@@ -44,8 +42,6 @@ class ChartData {
 
   final Color strokeSelectedColor;
   final Gradient strokeSelectedGradient;
-
-  final Gradient backgroundGradient;
 
   final double outerStrokeWidth;
   final double outerSelectedStrokeWidth;
@@ -89,7 +85,6 @@ class ChartData {
         strokeSelectedColor: strokeSelectedColor ?? this.strokeSelectedColor,
         strokeSelectedGradient:
             strokeSelectedGradient ?? this.strokeSelectedGradient,
-        backgroundGradient: backgroundGradient ?? this.backgroundGradient,
         outerStrokeWidth: outerStrokeWidth ?? this.outerStrokeWidth,
         outerSelectedStrokeWidth:
             outerSelectedStrokeWidth ?? this.outerSelectedStrokeWidth,
@@ -100,7 +95,8 @@ class ChartData {
 
   @override
   String toString() {
-    return '''{
+    return '''
+    {
       sectionColor: $sectionColor,
       shadowColor: $shadowColor,
       shadowElevation: $shadowElevation,
@@ -108,7 +104,6 @@ class ChartData {
       strokeGradient: $strokeGradient,
       strokeSelectedColor: $strokeSelectedColor,
       strokeSelectedGradient: $strokeSelectedGradient,
-      backgroundGradient: $backgroundGradient,
       outerStrokeWidth: $outerStrokeWidth,
       outerSelectedStrokeWidth: $outerSelectedStrokeWidth,
       innerStrokeWidth: $innerStrokeWidth,

@@ -29,7 +29,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Section> _sections = [
+  final _chartData = ChartData(
+    sectionColor: Colors.white,
+    shadowColor: Color(0x40000000),
+    strokeGradient: LinearGradient(
+      tileMode: TileMode.repeated,
+      colors: [
+        Color.fromRGBO(0, 0, 0, 0.0384),
+        Color.fromRGBO(255, 255, 255, 0.2376),
+      ],
+    ),
+    strokeSelectedColor: Color(0xFFE5E7EF),
+  );
+  final _sections = <Section>[
     Section(value: 0.34, selected: true),
     Section(value: 0.21),
     Section(value: 0.25),
@@ -42,27 +54,26 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text('donut_chart Demo'),
       ),
-      body: Center(
-        child: Container(
-          color: Colors.blueGrey[900],
-          child: DonutChart(
-            data: ChartData(
-              sectionColor: Colors.white,
-              shadowColor: Color(0x40000000),
-              strokeGradient: LinearGradient(
-                tileMode: TileMode.repeated,
-                colors: [
-                  Color.fromRGBO(0, 0, 0, 0.0384),
-                  Color.fromRGBO(255, 255, 255, 0.2376),
-                ],
-              ),
-              strokeSelectedColor: Color(0xFFE5E7EF),
+      body: ListView(
+        children: [
+          Container(
+            color: Colors.blueGrey[900],
+            child: DonutChart(
+              data: _chartData,
+              sections: _sections,
+              onSectionTapped: (value) =>
+                  setState(() => _sections.selectByIndex(value)),
             ),
-            sections: _sections,
-            onSectionTapped: (value) =>
-                setState(() => _sections.selectByIndex(value)),
           ),
-        ),
+          Divider(),
+          Container(
+            color: Colors.blueGrey[900],
+            child: DonutChartLoader(
+              data: _chartData,
+              backgroundColor: Colors.white24,
+            ),
+          ),
+        ],
       ),
     );
   }
