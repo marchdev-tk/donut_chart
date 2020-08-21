@@ -1,5 +1,9 @@
 # Changelog
 
-## [1.0.0]
+## [0.1.0]
 
-* Add changes here
+* Created donut chart
+
+## [0.2.0]
+
+* Created donut chart loader
