@@ -100,6 +100,7 @@ class DonutPainter extends CustomPainter {
 
   final List<Path> paths = [];
 
+  // coef between 2.3 and 2.5 -> 0.087
   double getRadius(int i, Size size) =>
       sections[i].selected ? size.height / 2.3 : size.height / 2.5;
 

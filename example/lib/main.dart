@@ -41,18 +41,49 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     strokeSelectedColor: Color(0xFFE5E7EF),
   );
-  final _sections = <Section>[
+  var _sections = <Section>[
     Section(value: 0.34, selected: true),
     Section(value: 0.21),
     Section(value: 0.25),
     Section(value: 0.20),
   ];
 
+  int index = 0;
+  Iterable<List<Section>> getData() sync* {
+    yield [
+      Section(value: 0.44, selected: true),
+      Section(value: 0.11),
+      Section(value: 0.15),
+      Section(value: 0.30),
+    ];
+
+    yield [
+      Section(value: 0.24, selected: true),
+      Section(value: 0.31),
+      Section(value: 0.45),
+    ];
+
+    yield [
+      Section(value: 0.34, selected: true),
+      Section(value: 0.21),
+      Section(value: 0.25),
+      Section(value: 0.20),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('donut_chart Demo'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Change sections',
+        onPressed: () async {
+          setState(() => _sections = getData().elementAt(index));
+          index = (index + 1) % 3;
+        },
+        child: Icon(Icons.edit),
       ),
       body: ListView(
         children: [

@@ -9,7 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'donut_painter.dart';
 
 @immutable
-class DonutChart extends StatelessWidget {
+class DonutChart extends StatefulWidget {
   const DonutChart({
     Key key,
     @required this.data,
@@ -22,17 +22,92 @@ class DonutChart extends StatelessWidget {
   final ValueChanged<int> onSectionTapped;
 
   @override
+  _DonutChartState createState() => _DonutChartState();
+}
+
+class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
+  AnimationController _valueController;
+  Animation<double> _valueAnimation;
+  List<double> _oldValues;
+
+  bool get _needAnimateValue {
+    if ((_oldValues?.length ?? 0) != widget.sections.length) {
+      return true;
+    }
+
+    for (var i = 0; i < _oldValues.length; i++) {
+      if (_oldValues[i] != widget.sections[i].value) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  void _onSectionTapped(value) {
+    // TODO: handle if needed
+    widget.onSectionTapped(value);
+  }
+
+  void _initValueController() {
+    _valueController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+    _valueAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+      parent: _valueController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void initState() {
+    _initValueController();
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(DonutChart oldWidget) {
+    _oldValues = oldWidget.sections.map((s) => s.value).toList();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_needAnimateValue) {
+      _valueController.forward(from: 0);
+    }
+
     return Transform.rotate(
       angle: -0.5 * pi,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          return CustomPaint(
-            painter: DonutPainter(
-              data: data,
-              sections: sections,
-              onSectionTapped: onSectionTapped,
-            ),
+          return ValueListenableBuilder<double>(
+            valueListenable: _valueAnimation,
+            builder: (context, coef, child) {
+              List<Section> sections;
+              if (_oldValues?.isNotEmpty == true) {
+                sections = [];
+                for (var i = 0; i < widget.sections.length; i++) {
+                  final section = widget.sections[i];
+                  final oldValue = _oldValues.contains(i) ? _oldValues[i] : 0;
+                  final value = oldValue + (section.value - oldValue) * coef;
+                  sections.add(section.copyWith(
+                    value: value,
+                  ));
+                }
+              }
+
+              return CustomPaint(
+                painter: DonutPainter(
+                  data: widget.data,
+                  sections: sections ?? widget.sections,
+                  onSectionTapped:
+                      widget.onSectionTapped != null ? _onSectionTapped : null,
+                ),
+                child: child,
+              );
+            },
             child: SizedBox.fromSize(
               size: Size.square(constraints.maxWidth),
             ),
@@ -40,6 +115,12 @@ class DonutChart extends StatelessWidget {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _valueController.dispose();
+    super.dispose();
   }
 }
 
