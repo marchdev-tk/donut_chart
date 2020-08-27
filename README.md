@@ -22,4 +22,4 @@ Feel free to post a feature requests or report a bug [here](https://github.com/m
 ## TODO
 
 * Add check for sections total value (must be 1.0)
-* Add animated transitions between states
+* Add animated transitions between states (selection changed)

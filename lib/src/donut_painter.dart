@@ -102,7 +102,7 @@ class DonutPainter extends CustomPainter {
 
   // coef between 2.3 and 2.5 -> 0.087
   double getRadius(int i, Size size) =>
-      sections[i].selected ? size.height / 2.3 : size.height / 2.5;
+      i != null && sections[i].selected ? size.height / 2 : size.height / 2.2;
 
   Color getSectionColor(int i) {
     final fractionCoef = 1 / sections.length;
@@ -129,7 +129,28 @@ class DonutPainter extends CustomPainter {
     paths.clear();
 
     final center = Point(size.width / 2, size.height / 2);
-    final innerRadius = size.height / 4;
+    final innerRadius = size.height / 3.3;
+
+    if (data.shadowColor != null) {
+      // ! background
+      final bgPath = _draw(
+        canvas: canvas,
+        center: center,
+        radius: getRadius(null, size),
+        innerRadius: innerRadius,
+        startAngle: 0,
+        endAngle: 2 * pi,
+        fill: data.backgroundColor ?? const Color(0x00ffffff),
+      );
+
+      // ! shadow beneath the segment
+      canvas.drawShadow(
+        bgPath,
+        data.shadowColor,
+        data.shadowElevation,
+        false,
+      );
+    }
 
     for (var i = 0; i < sections.length; i++) {
       final section = sections[i];
@@ -155,16 +176,6 @@ class DonutPainter extends CustomPainter {
           fill: section.color ?? getSectionColor(i),
         ),
       );
-
-      // ! shadow beneath the segment
-      if (data.shadowColor != null) {
-        canvas.drawShadow(
-          paths[i],
-          data.shadowColor,
-          data.shadowElevation,
-          false,
-        );
-      }
 
       // ! inner border
       if (data.hasInnerBorder()) {
@@ -247,12 +258,10 @@ class DonutPainter extends CustomPainter {
 class DonutLoadingPainter extends CustomPainter {
   DonutLoadingPainter({
     @required this.data,
-    @required this.backgroundColor,
     Listenable repaint,
   }) : super(repaint: repaint);
 
   final ChartData data;
-  final Color backgroundColor;
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
@@ -261,8 +270,8 @@ class DonutLoadingPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
     final center = Point(size.width / 2, size.height / 2);
-    final innerRadius = size.height / 4;
-    final radius = size.height / 2.5;
+    final innerRadius = size.height / 3.3;
+    final radius = size.height / 2.2;
 
     // ! loader
     _draw(
@@ -280,19 +289,19 @@ class DonutLoadingPainter extends CustomPainter {
       ).createShader(rect),
     );
 
-    // ! background
-    final bgPath = _draw(
-      canvas: canvas,
-      center: center,
-      radius: radius,
-      innerRadius: innerRadius,
-      startAngle: 0,
-      endAngle: 2 * pi,
-      fill: backgroundColor,
-    );
-
-    // ! shadow beneath the segment
     if (data.shadowColor != null) {
+      // ! background
+      final bgPath = _draw(
+        canvas: canvas,
+        center: center,
+        radius: radius,
+        innerRadius: innerRadius,
+        startAngle: 0,
+        endAngle: 2 * pi,
+        fill: data.backgroundColor ?? const Color(0x00ffffff),
+      );
+
+      // ! shadow beneath the segment
       canvas.drawShadow(
         bgPath,
         data.shadowColor,

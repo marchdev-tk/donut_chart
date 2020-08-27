@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 @immutable
 class ChartData {
   const ChartData({
+    this.backgroundColor,
     this.sectionColor,
     this.shadowColor,
     this.shadowElevation = 4,
@@ -21,6 +22,7 @@ class ChartData {
   });
 
   const ChartData.borderless({
+    this.backgroundColor,
     this.sectionColor,
     this.shadowColor,
     this.shadowElevation = 4,
@@ -32,6 +34,8 @@ class ChartData {
         outerSelectedStrokeWidth = null,
         innerStrokeWidth = null,
         innerSelectedStrokeWidth = null;
+
+  final Color backgroundColor;
 
   final Color sectionColor;
   final Color shadowColor;
@@ -63,6 +67,7 @@ class ChartData {
   }
 
   ChartData copyWith({
+    Color backgroundColor,
     Color sectionColor,
     Color shadowColor,
     double shadowElevation,
@@ -77,6 +82,7 @@ class ChartData {
     double innerSelectedStrokeWidth,
   }) =>
       ChartData(
+        backgroundColor: backgroundColor ?? this.backgroundColor,
         sectionColor: sectionColor ?? this.sectionColor,
         shadowColor: shadowColor ?? this.shadowColor,
         shadowElevation: shadowElevation ?? this.shadowElevation,
@@ -97,6 +103,7 @@ class ChartData {
   String toString() {
     return '''
     {
+      backgroundColor: $backgroundColor,
       sectionColor: $sectionColor,
       shadowColor: $shadowColor,
       shadowElevation: $shadowElevation,

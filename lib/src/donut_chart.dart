@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:math' show pi;
+import 'dart:math' show max, pi;
 
 import 'package:flutter/widgets.dart';
 
@@ -88,9 +88,13 @@ class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
               List<Section> sections;
               if (_oldValues?.isNotEmpty == true) {
                 sections = [];
-                for (var i = 0; i < widget.sections.length; i++) {
-                  final section = widget.sections[i];
-                  final oldValue = _oldValues.contains(i) ? _oldValues[i] : 0;
+                final length =
+                    max(widget.sections.length, _oldValues?.length ?? 0);
+                for (var i = 0; i < length; i++) {
+                  final section = widget.sections.length > i
+                      ? widget.sections[i]
+                      : const Section(value: 0);
+                  final oldValue = _oldValues.length > i ? _oldValues[i] : 0;
                   final value = oldValue + (section.value - oldValue) * coef;
                   sections.add(section.copyWith(
                     value: value,
@@ -129,11 +133,9 @@ class DonutChartLoader extends StatefulWidget {
   const DonutChartLoader({
     Key key,
     @required this.data,
-    @required this.backgroundColor,
   }) : super(key: key);
 
   final ChartData data;
-  final Color backgroundColor;
 
   @override
   _DonutChartLoaderState createState() => _DonutChartLoaderState();
@@ -174,7 +176,6 @@ class _DonutChartLoaderState extends State<DonutChartLoader>
               child: CustomPaint(
                 painter: DonutLoadingPainter(
                   data: widget.data,
-                  backgroundColor: widget.backgroundColor,
                 ),
                 child: child,
               ),

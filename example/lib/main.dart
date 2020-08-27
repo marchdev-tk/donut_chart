@@ -30,6 +30,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _chartData = ChartData(
+    backgroundColor: Colors.white24,
     sectionColor: Colors.white,
     shadowColor: Color(0x40000000),
     strokeGradient: LinearGradient(
@@ -101,7 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
             color: Colors.blueGrey[900],
             child: DonutChartLoader(
               data: _chartData,
-              backgroundColor: Colors.white24,
             ),
           ),
         ],
