@@ -1,9 +1,13 @@
 # Changelog
 
-## [0.1.0]
+## 0.3.0
 
-* Created donut chart
+* Added animation for "section changed" animation type
 
-## [0.2.0]
+## 0.2.0
 
 * Created donut chart loader
+
+## 0.1.0
+
+* Created donut chart
