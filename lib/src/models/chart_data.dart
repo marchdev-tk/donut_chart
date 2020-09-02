@@ -100,6 +100,26 @@ class ChartData {
       );
 
   @override
+  int get hashCode => super.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return other is ChartData &&
+        backgroundColor == other.backgroundColor &&
+        sectionColor == other.sectionColor &&
+        shadowColor == other.shadowColor &&
+        shadowElevation == other.shadowElevation &&
+        strokeColor == other.strokeColor &&
+        strokeGradient == other.strokeGradient &&
+        strokeSelectedColor == other.strokeSelectedColor &&
+        strokeSelectedGradient == other.strokeSelectedGradient &&
+        outerStrokeWidth == other.outerStrokeWidth &&
+        outerSelectedStrokeWidth == other.outerSelectedStrokeWidth &&
+        innerStrokeWidth == other.innerStrokeWidth &&
+        innerSelectedStrokeWidth == other.innerSelectedStrokeWidth;
+  }
+
+  @override
   String toString() {
     return '''
     {

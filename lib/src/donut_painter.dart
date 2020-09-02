@@ -120,7 +120,22 @@ class DonutPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    // TODO: impl
+    if (oldDelegate is DonutPainter) {
+      if (data != oldDelegate.data) {
+        return true;
+      }
+      if (sections.length != oldDelegate.sections.length) {
+        return true;
+      }
+      for (var i = 0; i < sections.length; i++) {
+        if (sections[i] != oldDelegate.sections[i]) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     return true;
   }
 

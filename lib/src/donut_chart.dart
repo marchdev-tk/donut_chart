@@ -82,38 +82,44 @@ class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
       angle: -0.5 * pi,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          return ValueListenableBuilder<double>(
-            valueListenable: _valueAnimation,
-            builder: (context, coef, child) {
-              List<Section> sections;
-              if (_oldValues?.isNotEmpty == true) {
-                sections = [];
-                final length =
-                    max(widget.sections.length, _oldValues?.length ?? 0);
-                for (var i = 0; i < length; i++) {
-                  final section = widget.sections.length > i
-                      ? widget.sections[i]
-                      : const Section(value: 0);
-                  final oldValue = _oldValues.length > i ? _oldValues[i] : 0;
-                  final value = oldValue + (section.value - oldValue) * coef;
-                  sections.add(section.copyWith(
-                    value: value,
-                  ));
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: constraints.maxWidth,
+            height: constraints.maxWidth,
+            child: ValueListenableBuilder<double>(
+              valueListenable: _valueAnimation,
+              builder: (context, coef, child) {
+                List<Section> sections;
+                if (_oldValues?.isNotEmpty == true) {
+                  sections = [];
+                  final length =
+                      max(widget.sections.length, _oldValues?.length ?? 0);
+                  for (var i = 0; i < length; i++) {
+                    final section = widget.sections.length > i
+                        ? widget.sections[i]
+                        : const Section(value: 0);
+                    final oldValue = _oldValues.length > i ? _oldValues[i] : 0;
+                    final value = oldValue + (section.value - oldValue) * coef;
+                    sections.add(section.copyWith(
+                      value: value,
+                    ));
+                  }
                 }
-              }
 
-              return CustomPaint(
-                painter: DonutPainter(
-                  data: widget.data,
-                  sections: sections ?? widget.sections,
-                  onSectionTapped:
-                      widget.onSectionTapped != null ? _onSectionTapped : null,
-                ),
-                child: child,
-              );
-            },
-            child: SizedBox.fromSize(
-              size: Size.square(constraints.maxWidth),
+                return CustomPaint(
+                  painter: DonutPainter(
+                    data: widget.data,
+                    sections: sections ?? widget.sections,
+                    onSectionTapped: widget.onSectionTapped != null
+                        ? _onSectionTapped
+                        : null,
+                  ),
+                  child: child,
+                );
+              },
+              child: SizedBox.fromSize(
+                size: Size.square(constraints.maxWidth),
+              ),
             ),
           );
         },
@@ -168,21 +174,26 @@ class _DonutChartLoaderState extends State<DonutChartLoader>
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return ValueListenableBuilder<double>(
-          valueListenable: _animation,
-          builder: (context, snapshot, child) {
-            return Transform.rotate(
-              angle: -0.5 * pi + snapshot,
-              child: CustomPaint(
-                painter: DonutLoadingPainter(
-                  data: widget.data,
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: constraints.maxWidth,
+          height: constraints.maxWidth,
+          child: ValueListenableBuilder<double>(
+            valueListenable: _animation,
+            builder: (context, snapshot, child) {
+              return Transform.rotate(
+                angle: -0.5 * pi + snapshot,
+                child: CustomPaint(
+                  painter: DonutLoadingPainter(
+                    data: widget.data,
+                  ),
+                  child: child,
                 ),
-                child: child,
-              ),
-            );
-          },
-          child: SizedBox.fromSize(
-            size: Size.square(constraints.maxWidth),
+              );
+            },
+            child: SizedBox.fromSize(
+              size: Size.square(constraints.maxWidth),
+            ),
           ),
         );
       },

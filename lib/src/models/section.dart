@@ -32,5 +32,16 @@ class Section {
       );
 
   @override
+  int get hashCode => super.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return other is Section &&
+        value == other.value &&
+        color == other.color &&
+        selected == other.selected;
+  }
+
+  @override
   String toString() => '{ value: $value, color: $color, selected: $selected }';
 }
