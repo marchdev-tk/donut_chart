@@ -25,10 +25,13 @@ class DonutChart extends StatefulWidget {
   _DonutChartState createState() => _DonutChartState();
 }
 
-class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
+class _DonutChartState extends State<DonutChart>
+    with SingleTickerProviderStateMixin {
   AnimationController _valueController;
   Animation<double> _valueAnimation;
+
   List<double> _oldValues;
+  int _oldSelectedIndex;
 
   bool get _needAnimateValue {
     if ((_oldValues?.length ?? 0) != widget.sections.length) {
@@ -45,8 +48,8 @@ class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
   }
 
   void _onSectionTapped(value) {
-    // TODO: handle if needed
     widget.onSectionTapped(value);
+    _valueController.forward(from: 0);
   }
 
   void _initValueController() {
@@ -58,6 +61,10 @@ class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
       parent: _valueController,
       curve: Curves.easeInOut,
     ));
+
+    if (_needAnimateValue) {
+      _valueController.forward(from: 0);
+    }
   }
 
   @override
@@ -69,15 +76,15 @@ class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
   @override
   void didUpdateWidget(DonutChart oldWidget) {
     _oldValues = oldWidget.sections.map((s) => s.value).toList();
+    _oldSelectedIndex = oldWidget.sections.indexOfSelected;
+    if (_needAnimateValue) {
+      _valueController.forward(from: 0);
+    }
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_needAnimateValue) {
-      _valueController.forward(from: 0);
-    }
-
     return Transform.rotate(
       angle: -0.5 * pi,
       child: LayoutBuilder(
@@ -88,33 +95,61 @@ class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
             height: constraints.maxWidth,
             child: ValueListenableBuilder<double>(
               valueListenable: _valueAnimation,
-              builder: (context, coef, child) {
-                List<Section> sections;
-                if (_oldValues?.isNotEmpty == true) {
-                  sections = [];
-                  final length =
-                      max(widget.sections.length, _oldValues?.length ?? 0);
-                  for (var i = 0; i < length; i++) {
-                    final section = widget.sections.length > i
-                        ? widget.sections[i]
-                        : const Section(value: 0);
-                    final oldValue = _oldValues.length > i ? _oldValues[i] : 0;
-                    final value = oldValue + (section.value - oldValue) * coef;
-                    sections.add(section.copyWith(
-                      value: value,
-                    ));
-                  }
-                }
+              builder: (context, valueCoef, child) {
+                return Builder(
+                  key: ValueKey(_valueAnimation.value),
+                  builder: (context) {
+                    List<Section> sections = [];
+                    final oldValuesLength = _oldValues?.length ?? 0;
+                    final length = max(widget.sections.length, oldValuesLength);
+                    for (var i = 0; i < length; i++) {
+                      final section = widget.sections.length > i
+                          ? widget.sections[i]
+                          : const Section(value: 0);
+                      final oldValue = oldValuesLength > i ? _oldValues[i] : 0;
+                      final value =
+                          oldValue + (section.value - oldValue) * valueCoef;
+                      sections.add(section.copyWith(
+                        value: value,
+                      ));
+                    }
 
-                return CustomPaint(
-                  painter: DonutPainter(
-                    data: widget.data,
-                    sections: sections ?? widget.sections,
-                    onSectionTapped: widget.onSectionTapped != null
-                        ? _onSectionTapped
-                        : null,
-                  ),
-                  child: child,
+                    final prevStart =
+                        sections.sumValuesBeforeIndex(_oldSelectedIndex ?? 0);
+                    final prevValue =
+                        _oldSelectedIndex != null && _oldValues != null
+                            ? _oldValues[_oldSelectedIndex]
+                            : 0;
+                    final prevEnd = prevStart + prevValue;
+
+                    final selectedIndex = sections.indexOfSelected;
+                    final selectedStart =
+                        sections.sumValuesBeforeIndex(selectedIndex);
+                    final selectedValue =
+                        selectedIndex != -1 && sections != null
+                            ? sections[selectedIndex].value
+                            : 0;
+                    final selectedEnd = selectedStart + selectedValue;
+
+                    final newStart =
+                        prevStart + (selectedStart - prevStart) * valueCoef;
+                    final newEnd =
+                        prevEnd + (selectedEnd - prevEnd) * valueCoef;
+
+                    return CustomPaint(
+                      isComplex: true,
+                      painter: DonutPainter(
+                        data: widget.data,
+                        selectedStartValue: newStart,
+                        selectedEndValue: newEnd,
+                        sections: sections ?? widget.sections,
+                        onSectionTapped: widget.onSectionTapped != null
+                            ? _onSectionTapped
+                            : null,
+                      ),
+                      child: child,
+                    );
+                  },
                 );
               },
               child: SizedBox.fromSize(
@@ -184,6 +219,7 @@ class _DonutChartLoaderState extends State<DonutChartLoader>
               return Transform.rotate(
                 angle: -0.5 * pi + snapshot,
                 child: CustomPaint(
+                  isComplex: true,
                   painter: DonutLoadingPainter(
                     data: widget.data,
                   ),

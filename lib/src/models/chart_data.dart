@@ -37,6 +37,7 @@ class ChartData {
 
   final Color backgroundColor;
 
+  /// This color will be used as color for `selected sector`.
   final Color sectionColor;
   final Color shadowColor;
   final double shadowElevation;

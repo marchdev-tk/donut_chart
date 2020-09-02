@@ -59,15 +59,15 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
 
     yield [
-      Section(value: 0.24, selected: true),
-      Section(value: 0.31),
+      Section(value: 0.24),
+      Section(value: 0.31, selected: true),
       Section(value: 0.45),
     ];
 
     yield [
-      Section(value: 0.34, selected: true),
+      Section(value: 0.34),
       Section(value: 0.21),
-      Section(value: 0.25),
+      Section(value: 0.25, selected: true),
       Section(value: 0.20),
     ];
   }
@@ -94,12 +94,11 @@ class _MyHomePageState extends State<MyHomePage> {
               data: _chartData,
               sections: _sections,
               onSectionTapped: (value) =>
-                  setState(() => _sections.selectByIndex(value)),
+                  setState(() => _sections = _sections.copyWithSelected(value)),
             ),
           ),
-          Divider(),
           Container(
-            color: Colors.blueGrey[900],
+            color: Colors.blueGrey[800],
             child: DonutChartLoader(
               data: _chartData,
             ),

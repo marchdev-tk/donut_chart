@@ -16,5 +16,22 @@ extension SectionListExtension on List<Section> {
     addAll(sections);
   }
 
+  List<Section> copyWithSelected(int index) {
+    final sections = <Section>[];
+
+    for (int i = 0; i < length; i++) {
+      sections.add(this[i].copyWith(selected: index == i));
+    }
+
+    return sections;
+  }
+
+  double sumValuesBeforeIndex(int index) {
+    return map((e) => e.value)
+        .toList()
+        .sublist(0, index)
+        .fold<double>(0, (a, b) => a + b);
+  }
+
   int get indexOfSelected => indexWhere((s) => s.selected);
 }
