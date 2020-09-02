@@ -135,7 +135,7 @@ class DonutPainter extends CustomPainter {
   }
 
   Color getSectionColor(int i) {
-    final fractionCoef = 1 / sections.length;
+    final fractionCoef = 1 / (sections.length + 1);
     return data.sectionColor.withOpacity(1 - (i + 1) * fractionCoef);
   }
 

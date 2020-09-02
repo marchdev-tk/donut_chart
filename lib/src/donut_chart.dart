@@ -30,8 +30,8 @@ class _DonutChartState extends State<DonutChart>
   AnimationController _valueController;
   Animation<double> _valueAnimation;
 
-  List<double> _oldValues;
-  int _oldSelectedIndex;
+  List<double> _oldValues = [];
+  int _oldSelectedIndex = 0;
 
   bool get _needAnimateValue {
     if ((_oldValues?.length ?? 0) != widget.sections.length) {
@@ -47,8 +47,12 @@ class _DonutChartState extends State<DonutChart>
     return false;
   }
 
-  void _onSectionTapped(value) {
-    widget.onSectionTapped(value);
+  void _onSectionTapped(int index) {
+    if (_oldSelectedIndex == index) {
+      return;
+    }
+
+    widget.onSectionTapped(index);
     _valueController.forward(from: 0);
   }
 
@@ -114,27 +118,31 @@ class _DonutChartState extends State<DonutChart>
                       ));
                     }
 
-                    final prevStart =
-                        sections.sumValuesBeforeIndex(_oldSelectedIndex ?? 0);
+                    final prevStart = _oldSelectedIndex != -1
+                        ? sections.sumValuesBeforeIndex(_oldSelectedIndex)
+                        : 0;
                     final prevValue =
-                        _oldSelectedIndex != null && _oldValues != null
+                        _oldSelectedIndex != -1 && _oldValues != null
                             ? _oldValues[_oldSelectedIndex]
                             : 0;
                     final prevEnd = prevStart + prevValue;
 
                     final selectedIndex = sections.indexOfSelected;
-                    final selectedStart =
-                        sections.sumValuesBeforeIndex(selectedIndex);
+                    final selectedStart = selectedIndex != -1
+                        ? sections.sumValuesBeforeIndex(selectedIndex)
+                        : 0;
                     final selectedValue =
-                        selectedIndex != -1 && sections != null
-                            ? sections[selectedIndex].value
-                            : 0;
+                        selectedIndex != -1 ? sections[selectedIndex].value : 0;
                     final selectedEnd = selectedStart + selectedValue;
 
                     final newStart =
                         prevStart + (selectedStart - prevStart) * valueCoef;
                     final newEnd =
                         prevEnd + (selectedEnd - prevEnd) * valueCoef;
+
+                    if (valueCoef == 1) {
+                      _oldSelectedIndex = selectedIndex;
+                    }
 
                     return CustomPaint(
                       isComplex: true,
