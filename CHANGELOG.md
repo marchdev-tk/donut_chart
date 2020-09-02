@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+
+* Added animation for "selection changed" animation type
+
 ## 0.3.0
 
 * Added animation for "section changed" animation type
