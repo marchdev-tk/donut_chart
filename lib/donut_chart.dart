@@ -4,6 +4,8 @@
 
 library donut_chart;
 
-export 'src/donut_chart.dart';
 export 'src/donut_painter.dart';
 export 'src/utils/section_utils.dart';
+export 'src/widgets/donut_chart.dart';
+export 'src/widgets/donut_loader.dart';
+export 'src/widgets/donut_progress.dart';

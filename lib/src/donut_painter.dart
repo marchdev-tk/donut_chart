@@ -9,10 +9,12 @@ import 'package:flutter/widgets.dart';
 import 'models/section.dart';
 import 'models/chart_data.dart';
 import 'utils/section_utils.dart';
+import 'models/progress_data.dart';
 
 export 'models/section.dart';
 export 'models/chart_data.dart';
 export 'utils/section_utils.dart';
+export 'models/progress_data.dart';
 
 Path _draw({
   Canvas canvas,
@@ -23,6 +25,7 @@ Path _draw({
   double endAngle,
   Color fill,
   Shader shader,
+  bool rounded = false,
 }) {
   final paint = Paint();
 
@@ -33,15 +36,19 @@ Path _draw({
   paint.style = PaintingStyle.fill;
 
   final innerRadiusStartPoint = Point<double>(
-      innerRadius * cos(startAngle) + center.x,
-      innerRadius * sin(startAngle) + center.y);
+    innerRadius * cos(startAngle) + center.x,
+    innerRadius * sin(startAngle) + center.y,
+  );
 
   final innerRadiusEndPoint = Point<double>(
-      innerRadius * cos(endAngle) + center.x,
-      innerRadius * sin(endAngle) + center.y);
+    innerRadius * cos(endAngle) + center.x,
+    innerRadius * sin(endAngle) + center.y,
+  );
 
   final radiusStartPoint = Point<double>(
-      radius * cos(startAngle) + center.x, radius * sin(startAngle) + center.y);
+    radius * cos(startAngle) + center.x,
+    radius * sin(startAngle) + center.y,
+  );
 
   final centerOffset = Offset(center.x, center.y);
 
@@ -50,37 +57,80 @@ Path _draw({
 
   final midpointAngle = (endAngle + startAngle) / 2;
 
-  final path = Path()..moveTo(innerRadiusStartPoint.x, innerRadiusStartPoint.y);
+  final path = Path()
+    ..moveTo(
+      innerRadiusStartPoint.x,
+      innerRadiusStartPoint.y,
+    );
 
   path.lineTo(radiusStartPoint.x, radiusStartPoint.y);
 
   // For full circles, draw the arc in two parts.
   if (isFullCircle) {
-    path.arcTo(Rect.fromCircle(center: centerOffset, radius: radius),
-        startAngle, midpointAngle - startAngle, true);
-    path.arcTo(Rect.fromCircle(center: centerOffset, radius: radius),
-        midpointAngle, endAngle - midpointAngle, true);
+    path.arcTo(
+      Rect.fromCircle(center: centerOffset, radius: radius),
+      startAngle,
+      midpointAngle - startAngle,
+      true,
+    );
+    path.arcTo(
+      Rect.fromCircle(center: centerOffset, radius: radius),
+      midpointAngle,
+      endAngle - midpointAngle,
+      true,
+    );
   } else {
-    path.arcTo(Rect.fromCircle(center: centerOffset, radius: radius),
-        startAngle, endAngle - startAngle, true);
+    path.arcTo(
+      Rect.fromCircle(center: centerOffset, radius: radius),
+      startAngle,
+      endAngle - startAngle,
+      true,
+    );
   }
 
-  path.lineTo(innerRadiusEndPoint.x, innerRadiusEndPoint.y);
+  if (rounded) {
+    path.arcToPoint(
+      Offset(innerRadiusEndPoint.x, innerRadiusEndPoint.y),
+      radius: Radius.circular((radius - innerRadius) / 2),
+    );
+  } else {
+    path.lineTo(innerRadiusEndPoint.x, innerRadiusEndPoint.y);
+  }
 
   // For full circles, draw the arc in two parts.
   if (isFullCircle) {
-    path.arcTo(Rect.fromCircle(center: centerOffset, radius: innerRadius),
-        endAngle, midpointAngle - endAngle, true);
-    path.arcTo(Rect.fromCircle(center: centerOffset, radius: innerRadius),
-        midpointAngle, startAngle - midpointAngle, true);
+    path.arcTo(
+      Rect.fromCircle(center: centerOffset, radius: innerRadius),
+      endAngle,
+      midpointAngle - endAngle,
+      true,
+    );
+    path.arcTo(
+      Rect.fromCircle(center: centerOffset, radius: innerRadius),
+      midpointAngle,
+      startAngle - midpointAngle,
+      true,
+    );
   } else {
-    path.arcTo(Rect.fromCircle(center: centerOffset, radius: innerRadius),
-        endAngle, startAngle - endAngle, true);
+    path.arcTo(
+      Rect.fromCircle(center: centerOffset, radius: innerRadius),
+      endAngle,
+      startAngle - endAngle,
+      true,
+    );
   }
 
   // Drawing two copies of this line segment, before and after the arcs,
   // ensures that the path actually gets closed correctly.
-  path.lineTo(radiusStartPoint.x, radiusStartPoint.y);
+  if (rounded) {
+    path.arcToPoint(
+      Offset(radiusStartPoint.x, radiusStartPoint.y),
+      radius: Radius.circular((radius - innerRadius) / 2),
+    );
+  } else {
+    path.lineTo(radiusStartPoint.x, radiusStartPoint.y);
+  }
+
   canvas.drawPath(path, paint);
 
   return path;
@@ -459,5 +509,88 @@ class DonutLoadingPainter extends CustomPainter {
         );
       }
     }
+  }
+}
+
+class DonutProgressPainter extends CustomPainter {
+  DonutProgressPainter({
+    @required this.data,
+    @required this.value,
+    this.start = 0,
+    Listenable repaint,
+  })  : assert(
+          data != null,
+          '`data` must not be null!',
+        ),
+        assert(
+          value != null && value >= 0 && value <= 1,
+          '`value` must be in range [0, 1]',
+        ),
+        assert(
+          start != null && start >= 0 && start <= 1,
+          '`start` must be in range [0, 1]',
+        ),
+        assert(
+          start + value <= 1,
+          'Sum of `value` and `start` must be less or equal to `1`',
+        ),
+        super(repaint: repaint);
+
+  final ProgressData data;
+  final double start;
+  final double value;
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    if (oldDelegate is DonutProgressPainter) {
+      if (data != oldDelegate.data ||
+          start != oldDelegate.start ||
+          value != oldDelegate.value) {
+        return true;
+      }
+
+      return false;
+    }
+
+    return true;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Point(size.width / 2, size.height / 2);
+    final radius = size.height / 2 - data.shadowElevation;
+    final startAngle = start * 2 * pi;
+    final endAngle = startAngle + value * 2 * pi;
+
+    // ! background
+    _draw(
+      canvas: canvas,
+      center: center,
+      radius: radius,
+      innerRadius: radius - data.strokeWidth,
+      startAngle: 0,
+      endAngle: 2 * pi,
+      fill: data.backgroundColor ?? const Color(0x00ffffff),
+    );
+
+    // ! segment
+    final segment = _draw(
+      canvas: canvas,
+      center: center,
+      radius: radius,
+      innerRadius: radius - data.strokeWidth,
+      startAngle: startAngle,
+      endAngle: endAngle,
+      fill: data.sectionColor,
+      rounded: true,
+    );
+
+    // ! shadow beneath the segment
+    canvas.drawShadow(
+      segment,
+      data.shadowColor,
+      data.shadowElevation,
+      false,
+    );
   }
 }

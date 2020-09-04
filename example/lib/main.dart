@@ -48,6 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
     Section(value: 0.25),
     Section(value: 0.20),
   ];
+  var _startValue = .0;
+  var _value = 0.7;
 
   int index = 0;
   Iterable<List<Section>> getData() sync* {
@@ -72,6 +74,23 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
   }
 
+  Iterable<List<double>> getProgress() sync* {
+    yield [
+      0.3,
+      0.5,
+    ];
+
+    yield [
+      0.7,
+      0.3,
+    ];
+
+    yield [
+      0,
+      0.7,
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Change sections',
-        onPressed: () async {
+        onPressed: () {
           setState(() => _sections = getData().elementAt(index));
           index = (index + 1) % 3;
         },
@@ -95,6 +114,39 @@ class _MyHomePageState extends State<MyHomePage> {
               sections: _sections,
               onSectionTapped: (value) =>
                   setState(() => _sections = _sections.copyWithSelected(value)),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 16),
+            height: 56,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DonutProgress(
+                  data: ProgressData(
+                    backgroundColor: Colors.grey[300],
+                    sectionColor: Colors.blue,
+                    shadowColor: Colors.blue,
+                    shadowElevation: 2,
+                  ),
+                  startValue: _startValue,
+                  value: _value,
+                  size: 56,
+                ),
+                const SizedBox(width: 16),
+                FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      final data = getProgress().elementAt(index);
+                      _startValue = data.first;
+                      _value = data.last;
+                    });
+                    index = (index + 1) % 3;
+                  },
+                  mini: true,
+                  child: Icon(Icons.edit),
+                ),
+              ],
             ),
           ),
           Container(
