@@ -1,4 +1,4 @@
-// Copyright (c) 2020, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// Copyright (c) 2021, the MarchDev Toolkit project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -11,9 +11,9 @@ import '../donut_painter.dart';
 @immutable
 class DonutProgress extends StatefulWidget {
   const DonutProgress({
-    Key key,
-    @required this.data,
-    @required this.value,
+    Key? key,
+    required this.data,
+    required this.value,
     this.startValue = 0,
     this.size = 48,
   }) : super(key: key);
@@ -29,8 +29,8 @@ class DonutProgress extends StatefulWidget {
 
 class _DonutProgressState extends State<DonutProgress>
     with SingleTickerProviderStateMixin {
-  AnimationController _valueController;
-  Animation<double> _valueAnimation;
+  late AnimationController _valueController;
+  late Animation<double> _valueAnimation;
 
   double _oldStartValue = 0;
   double _oldValue = 0;

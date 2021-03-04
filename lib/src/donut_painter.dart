@@ -1,4 +1,4 @@
-// Copyright (c) 2020, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// Copyright (c) 2021, the MarchDev Toolkit project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -17,14 +17,14 @@ export 'utils/section_utils.dart';
 export 'models/progress_data.dart';
 
 Path _draw({
-  Canvas canvas,
-  Point center,
-  double radius,
-  double innerRadius,
-  double startAngle,
-  double endAngle,
-  Color fill,
-  Shader shader,
+  required Canvas canvas,
+  required Point center,
+  required double radius,
+  required double innerRadius,
+  required double startAngle,
+  required double endAngle,
+  Color? fill,
+  Shader? shader,
   bool rounded = false,
 }) {
   final paint = Paint();
@@ -50,7 +50,7 @@ Path _draw({
     radius * sin(startAngle) + center.y,
   );
 
-  final centerOffset = Offset(center.x, center.y);
+  final centerOffset = Offset(center.x as double, center.y as double);
 
   final isFullCircle =
       startAngle != null && endAngle != null && endAngle - startAngle == 2 * pi;
@@ -138,12 +138,12 @@ Path _draw({
 
 class DonutPainter extends CustomPainter {
   DonutPainter({
-    @required this.data,
-    @required this.sections,
+    required this.data,
+    required this.sections,
     this.selectedStartValue,
     this.selectedEndValue,
     this.onSectionTapped,
-    Listenable repaint,
+    Listenable? repaint,
   })  : assert(
           data != null,
           '`data` must not be null!',
@@ -163,14 +163,14 @@ class DonutPainter extends CustomPainter {
 
   final ChartData data;
   final List<Section> sections;
-  final double selectedStartValue;
-  final double selectedEndValue;
-  final ValueChanged<int> onSectionTapped;
+  final double? selectedStartValue;
+  final double? selectedEndValue;
+  final ValueChanged<int>? onSectionTapped;
 
   final List<Path> paths = [];
 
   @deprecated
-  Color getSectionColorAdaptive(int i) {
+  Color? getSectionColorAdaptive(int i) {
     final fractionCoef = 1 / sections.length;
     if (sections[i].selected) {
       return data.sectionColor;
@@ -181,19 +181,19 @@ class DonutPainter extends CustomPainter {
         ? i - selectedIndex
         : sections.length - 1 - selectedIndex + 1 + i;
 
-    return data.sectionColor.withOpacity(1 - index * fractionCoef);
+    return data.sectionColor!.withOpacity(1 - index * fractionCoef);
   }
 
   Color getSectionColor(int i) {
     final fractionCoef = 1 / (sections.length + 1);
-    return data.sectionColor.withOpacity(1 - (i + 1) * fractionCoef);
+    return data.sectionColor!.withOpacity(1 - (i + 1) * fractionCoef);
   }
 
   void _paintBackgroundAndShadow({
-    @required Canvas canvas,
-    @required Point center,
-    @required double radius,
-    @required double innerRadius,
+    required Canvas canvas,
+    required Point center,
+    required double radius,
+    required double innerRadius,
   }) {
     if (data.shadowColor != null) {
       // ! background
@@ -210,7 +210,7 @@ class DonutPainter extends CustomPainter {
       // ! shadow beneath the segment
       canvas.drawShadow(
         bgPath,
-        data.shadowColor,
+        data.shadowColor!,
         data.shadowElevation,
         false,
       );
@@ -218,11 +218,11 @@ class DonutPainter extends CustomPainter {
   }
 
   void _paintSections({
-    @required Size size,
-    @required Canvas canvas,
-    @required Point center,
-    @required double radius,
-    @required double innerRadius,
+    required Size size,
+    required Canvas canvas,
+    required Point center,
+    required double radius,
+    required double innerRadius,
   }) {
     for (var i = 0; i < sections.length; i++) {
       final section = sections[i];
@@ -246,14 +246,14 @@ class DonutPainter extends CustomPainter {
       );
 
       // ! inner border
-      if (data.hasInnerBorder() && data.innerStrokeWidth > 0) {
+      if (data.hasInnerBorder() && data.innerStrokeWidth! > 0) {
         final strokeShader = data.strokeGradient
             ?.createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
         _draw(
           canvas: canvas,
           center: center,
-          radius: innerRadius + data.innerStrokeWidth,
+          radius: innerRadius + data.innerStrokeWidth!,
           innerRadius: innerRadius,
           startAngle: start,
           endAngle: end,
@@ -263,7 +263,7 @@ class DonutPainter extends CustomPainter {
       }
 
       // ! outer border
-      if (data.hasOuterBorder() && data.outerStrokeWidth > 0) {
+      if (data.hasOuterBorder() && data.outerStrokeWidth! > 0) {
         final strokeShader = data.strokeGradient
             ?.createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
@@ -271,7 +271,7 @@ class DonutPainter extends CustomPainter {
           canvas: canvas,
           center: center,
           radius: radius,
-          innerRadius: radius - data.outerStrokeWidth,
+          innerRadius: radius - data.outerStrokeWidth!,
           startAngle: start,
           endAngle: end,
           fill: data.strokeColor,
@@ -282,14 +282,14 @@ class DonutPainter extends CustomPainter {
   }
 
   void _paintSelectedSection({
-    @required Size size,
-    @required Canvas canvas,
-    @required Point center,
-    @required double radius,
-    @required double innerRadius,
+    required Size size,
+    required Canvas canvas,
+    required Point center,
+    required double radius,
+    required double innerRadius,
   }) {
-    final start = selectedStartValue * 2 * pi;
-    final end = selectedEndValue * 2 * pi;
+    final start = selectedStartValue! * 2 * pi;
+    final end = selectedEndValue! * 2 * pi;
 
     // ! segment
     _draw(
@@ -303,14 +303,14 @@ class DonutPainter extends CustomPainter {
     );
 
     // ! inner border
-    if (data.hasInnerBorder() && data.innerStrokeWidth > 0) {
+    if (data.hasInnerBorder() && data.innerStrokeWidth! > 0) {
       final strokeShader = data.strokeSelectedGradient
           ?.createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
       _draw(
         canvas: canvas,
         center: center,
-        radius: innerRadius + data.innerSelectedStrokeWidth,
+        radius: innerRadius + data.innerSelectedStrokeWidth!,
         innerRadius: innerRadius,
         startAngle: start,
         endAngle: end,
@@ -320,7 +320,7 @@ class DonutPainter extends CustomPainter {
     }
 
     // ! outer border
-    if (data.hasOuterBorder() && data.outerStrokeWidth > 0) {
+    if (data.hasOuterBorder() && data.outerStrokeWidth! > 0) {
       final strokeShader = data.strokeSelectedGradient
           ?.createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
@@ -328,7 +328,7 @@ class DonutPainter extends CustomPainter {
         canvas: canvas,
         center: center,
         radius: radius,
-        innerRadius: radius - data.outerSelectedStrokeWidth,
+        innerRadius: radius - data.outerSelectedStrokeWidth!,
         startAngle: start,
         endAngle: end,
         fill: data.strokeSelectedColor,
@@ -392,7 +392,7 @@ class DonutPainter extends CustomPainter {
   }
 
   @override
-  bool hitTest(Offset position) {
+  bool? hitTest(Offset position) {
     if (paths?.isNotEmpty != true) {
       return null;
     }
@@ -415,8 +415,8 @@ class DonutPainter extends CustomPainter {
 
 class DonutLoadingPainter extends CustomPainter {
   DonutLoadingPainter({
-    @required this.data,
-    Listenable repaint,
+    required this.data,
+    Listenable? repaint,
   })  : assert(
           data != null,
           '`data` must not be null!',
@@ -446,7 +446,7 @@ class DonutLoadingPainter extends CustomPainter {
       shader: SweepGradient(
         colors: [
           const Color(0x00ffffff),
-          data.sectionColor,
+          data.sectionColor!,
         ],
       ).createShader(rect),
     );
@@ -466,7 +466,7 @@ class DonutLoadingPainter extends CustomPainter {
       // ! shadow beneath the segment
       canvas.drawShadow(
         bgPath,
-        data.shadowColor,
+        data.shadowColor!,
         data.shadowElevation,
         false,
       );
@@ -474,14 +474,14 @@ class DonutLoadingPainter extends CustomPainter {
 
     // ! inner border
     if (data.hasInnerBorder()) {
-      if (data.innerStrokeWidth > 0) {
+      if (data.innerStrokeWidth! > 0) {
         final strokeColor = data.strokeColor;
         final strokeShader = data.strokeGradient?.createShader(rect);
 
         _draw(
           canvas: canvas,
           center: center,
-          radius: innerRadius + data.innerStrokeWidth,
+          radius: innerRadius + data.innerStrokeWidth!,
           innerRadius: innerRadius,
           startAngle: 0,
           endAngle: 2 * pi,
@@ -493,7 +493,7 @@ class DonutLoadingPainter extends CustomPainter {
 
     // ! outer border
     if (data.hasOuterBorder()) {
-      if (data.outerStrokeWidth > 0) {
+      if (data.outerStrokeWidth! > 0) {
         final strokeColor = data.strokeColor;
         final strokeShader = data.strokeGradient?.createShader(rect);
 
@@ -501,7 +501,7 @@ class DonutLoadingPainter extends CustomPainter {
           canvas: canvas,
           center: center,
           radius: radius,
-          innerRadius: radius - data.outerStrokeWidth,
+          innerRadius: radius - data.outerStrokeWidth!,
           startAngle: 0,
           endAngle: 2 * pi,
           fill: strokeColor,
@@ -514,10 +514,10 @@ class DonutLoadingPainter extends CustomPainter {
 
 class DonutProgressPainter extends CustomPainter {
   DonutProgressPainter({
-    @required this.data,
-    @required this.value,
+    required this.data,
+    required this.value,
     this.start = 0,
-    Listenable repaint,
+    Listenable? repaint,
   })  : assert(
           data != null,
           '`data` must not be null!',
@@ -588,7 +588,7 @@ class DonutProgressPainter extends CustomPainter {
     // ! shadow beneath the segment
     canvas.drawShadow(
       segment,
-      data.shadowColor,
+      data.shadowColor!,
       data.shadowElevation,
       false,
     );

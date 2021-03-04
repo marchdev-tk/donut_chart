@@ -1,4 +1,4 @@
-// Copyright (c) 2020, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// Copyright (c) 2021, the MarchDev Toolkit project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -11,8 +11,8 @@ import '../donut_painter.dart';
 @immutable
 class DonutChartLoader extends StatefulWidget {
   const DonutChartLoader({
-    Key key,
-    @required this.data,
+    Key? key,
+    required this.data,
   }) : super(key: key);
 
   final ChartData data;
@@ -23,8 +23,8 @@ class DonutChartLoader extends StatefulWidget {
 
 class _DonutChartLoaderState extends State<DonutChartLoader>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<double> _animation;
+  late AnimationController _controller;
+  late Animation<double> _animation;
 
   @override
   void initState() {

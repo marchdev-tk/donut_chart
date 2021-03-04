@@ -4,7 +4,7 @@ homepage: https://github.com/marchdev-tk/donut_chart
 description: Donut chart
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -14,7 +14,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  pedantic: ^1.8.0
+  pedantic: ^1.11.0
 
 flutter:
   uses-material-design: true

@@ -1,4 +1,4 @@
-// Copyright (c) 2020, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// Copyright (c) 2021, the MarchDev Toolkit project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -11,15 +11,15 @@ import '../donut_painter.dart';
 @immutable
 class DonutChart extends StatefulWidget {
   const DonutChart({
-    Key key,
-    @required this.data,
-    @required this.sections,
+    Key? key,
+    required this.data,
+    required this.sections,
     this.onSectionTapped,
   }) : super(key: key);
 
   final ChartData data;
   final List<Section> sections;
-  final ValueChanged<int> onSectionTapped;
+  final ValueChanged<int>? onSectionTapped;
 
   @override
   _DonutChartState createState() => _DonutChartState();
@@ -27,8 +27,8 @@ class DonutChart extends StatefulWidget {
 
 class _DonutChartState extends State<DonutChart>
     with SingleTickerProviderStateMixin {
-  AnimationController _valueController;
-  Animation<double> _valueAnimation;
+  late AnimationController _valueController;
+  late Animation<double> _valueAnimation;
 
   List<double> _oldValues = [];
   int _oldSelectedIndex = 0;
@@ -52,7 +52,7 @@ class _DonutChartState extends State<DonutChart>
       return;
     }
 
-    widget.onSectionTapped(index);
+    widget.onSectionTapped!(index);
     _valueController.forward(from: 0);
   }
 
@@ -111,10 +111,10 @@ class _DonutChartState extends State<DonutChart>
                           ? widget.sections[i]
                           : const Section(value: 0);
                       final oldValue = oldValuesLength > i ? _oldValues[i] : 0;
-                      final value =
+                      final num value =
                           oldValue + (section.value - oldValue) * valueCoef;
                       sections.add(section.copyWith(
-                        value: value,
+                        value: value as double?,
                       ));
                     }
 
@@ -135,9 +135,9 @@ class _DonutChartState extends State<DonutChart>
                         selectedIndex != -1 ? sections[selectedIndex].value : 0;
                     final selectedEnd = selectedStart + selectedValue;
 
-                    final newStart =
+                    final num newStart =
                         prevStart + (selectedStart - prevStart) * valueCoef;
-                    final newEnd =
+                    final num newEnd =
                         prevEnd + (selectedEnd - prevEnd) * valueCoef;
 
                     if (valueCoef == 1) {
@@ -148,8 +148,8 @@ class _DonutChartState extends State<DonutChart>
                       isComplex: true,
                       painter: DonutPainter(
                         data: widget.data,
-                        selectedStartValue: newStart,
-                        selectedEndValue: newEnd,
+                        selectedStartValue: newStart as double?,
+                        selectedEndValue: newEnd as double?,
                         sections: sections ?? widget.sections,
                         onSectionTapped: widget.onSectionTapped != null
                             ? _onSectionTapped

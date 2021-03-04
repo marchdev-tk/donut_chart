@@ -1,4 +1,4 @@
-// Copyright (c) 2020, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// Copyright (c) 2021, the MarchDev Toolkit project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -14,18 +14,18 @@ class ProgressData {
     this.strokeWidth = 3,
   });
 
-  final Color backgroundColor;
-  final Color sectionColor;
-  final Color shadowColor;
+  final Color? backgroundColor;
+  final Color? sectionColor;
+  final Color? shadowColor;
   final double shadowElevation;
   final double strokeWidth;
 
   ProgressData copyWith({
-    Color backgroundColor,
-    Color sectionColor,
-    Color shadowColor,
-    double shadowElevation,
-    double strokeWidth,
+    Color? backgroundColor,
+    Color? sectionColor,
+    Color? shadowColor,
+    double? shadowElevation,
+    double? strokeWidth,
   }) =>
       ProgressData(
         backgroundColor: backgroundColor ?? this.backgroundColor,

@@ -1,4 +1,4 @@
-// Copyright (c) 2020, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// Copyright (c) 2021, the MarchDev Toolkit project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -35,23 +35,23 @@ class ChartData {
         innerStrokeWidth = null,
         innerSelectedStrokeWidth = null;
 
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// This color will be used as color for `selected sector`.
-  final Color sectionColor;
-  final Color shadowColor;
+  final Color? sectionColor;
+  final Color? shadowColor;
   final double shadowElevation;
 
-  final Color strokeColor;
-  final Gradient strokeGradient;
+  final Color? strokeColor;
+  final Gradient? strokeGradient;
 
-  final Color strokeSelectedColor;
-  final Gradient strokeSelectedGradient;
+  final Color? strokeSelectedColor;
+  final Gradient? strokeSelectedGradient;
 
-  final double outerStrokeWidth;
-  final double outerSelectedStrokeWidth;
-  final double innerStrokeWidth;
-  final double innerSelectedStrokeWidth;
+  final double? outerStrokeWidth;
+  final double? outerSelectedStrokeWidth;
+  final double? innerStrokeWidth;
+  final double? innerSelectedStrokeWidth;
 
   bool hasInnerBorder() {
     return (strokeColor != null || strokeGradient != null) &&
@@ -68,19 +68,19 @@ class ChartData {
   }
 
   ChartData copyWith({
-    Color backgroundColor,
-    Color sectionColor,
-    Color shadowColor,
-    double shadowElevation,
-    Color strokeColor,
-    Gradient strokeGradient,
-    Color strokeSelectedColor,
-    Gradient strokeSelectedGradient,
-    Gradient backgroundGradient,
-    double outerStrokeWidth,
-    double outerSelectedStrokeWidth,
-    double innerStrokeWidth,
-    double innerSelectedStrokeWidth,
+    Color? backgroundColor,
+    Color? sectionColor,
+    Color? shadowColor,
+    double? shadowElevation,
+    Color? strokeColor,
+    Gradient? strokeGradient,
+    Color? strokeSelectedColor,
+    Gradient? strokeSelectedGradient,
+    Gradient? backgroundGradient,
+    double? outerStrokeWidth,
+    double? outerSelectedStrokeWidth,
+    double? innerStrokeWidth,
+    double? innerSelectedStrokeWidth,
   }) =>
       ChartData(
         backgroundColor: backgroundColor ?? this.backgroundColor,
